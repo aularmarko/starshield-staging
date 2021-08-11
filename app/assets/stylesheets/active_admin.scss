@@ -1,0 +1,116 @@
+@import 'activeadmin_addons/all';
+// Sass variable overrides must be declared before loading up Active Admin's styles.
+//
+// To view the variables that Active Admin provides, take a look at
+// `app/assets/stylesheets/active_admin/mixins/_variables.scss` in the
+// Active Admin source.
+//
+// For example, to change the sidebar width:
+// $sidebar-width: 242px;
+
+// Active Admin's got SASS!
+@import "active_admin/mixins";
+@import "active_admin/base";
+@import "wigu/active_admin_theme";
+
+// Overriding any non-variable Sass must be done after the fact.
+// For example, to change the default status-tag color:
+//
+//   .status_tag { background: #6090DB; }
+$sky-blue: #5ea3d3;
+$grey: #8494a8;
+$downloaded-color: #FF9900;
+$cutting-color: #BDB76B;
+$failed-color: #FF0000;
+$complete-color: #08A510;
+
+body.admin_kits, body.admin_models, body.admin_makes {
+  #kit_submit_action, #model_submit_action, #make_submit_action {
+    input {
+      background-color: $sky-blue;
+    }
+  }
+}
+.file-container {
+  padding: 10px;
+  display: flex;
+  .empty-file {
+    padding: 0 20px;
+  }
+  h5 {
+    color: $grey;
+  }
+  a {
+    margin: 1.2rem 0.5rem;
+  }
+}
+
+.status_tag {
+  &.downloaded { background: $downloaded-color; }
+  &.cutting { background: $cutting-color; }
+  &.failed { background: $failed-color; }
+  &.complete { background: $complete-color; }
+}
+
+#active_admin_content {
+  display: flex;
+  flex-direction: column;
+  form.filter_form {
+    display: flex;
+  }
+  .filter_form_field {
+    padding: 4px;
+  }
+  #sidebar {
+    order: -1;
+    margin: 0 -.5rem;
+    display: flex;
+    width: auto;
+    flex-direction: column;
+  }
+  #sidebar > div {
+    width: auto;
+    margin: 0 .5rem;
+    flex: 1 1 100%;
+  }
+  #sidebar > div:first-child {
+    flex:  0 0 auto
+  }
+  #main_content_wrapper #main_content {
+  margin: 0
+  }
+}
+.table_tools {
+  margin: 1rem 0;
+}
+
+body.admin_reports {
+  .filter_select {
+    span.select2 {
+      @media (max-width: 1550px) {
+        width: 200px !important;
+      }
+      @media (max-width: 1380px) {
+        width: 150px !important;
+      }
+    }
+  }
+  .filter_form {
+    .buttons {
+      margin: 15px 10px;
+      input {
+        margin: 0 10px;
+      }
+    }
+    @media (max-width: 1200px) {
+      .date_range {
+        input {
+          margin: 5px;
+        }
+      }
+      .buttons input {
+        margin: 10px;
+      }
+    }
+  }
+}

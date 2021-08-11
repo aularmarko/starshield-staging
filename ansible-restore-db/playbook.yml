@@ -1,0 +1,44 @@
+- hosts: database
+  tasks:
+    - name: Make sure pymysql is present
+      pip:
+        name: pymysql
+        state: present
+    - name: install mysql plugins
+      command: ansible-galaxy collection install community.mysql
+    - name: install aws plugin
+      command: ansible-galaxy collection install amazon.aws
+    - name: Get the dump
+      amazon.aws.aws_s3:
+        aws_access_key: "{{ aws_access_key }}"
+        aws_secret_key: "{{ aws_secret_key }}"
+        region: "{{ region  }}"
+        bucket: starshield-bucket
+        object: rcsoemwm_toyports1.sql
+        dest: /tmp/rcsoemwm_toyports1.sql
+        mode: get
+    - name: drop
+      community.mysql.mysql_db:
+        login_host: "{{ login_host  }}"
+        login_port: "{{ login_port }}"
+        login_user: "{{ login_user }}"
+        login_password: "{{ login_password }}"
+        name: starshieldstage
+        state: absent
+    - name: Create
+      community.mysql.mysql_db:
+        login_host: "{{ login_host  }}"
+        login_port: "{{ login_port }}"
+        login_user: "{{ login_user }}"
+        login_password: "{{ login_password }}"
+        name: starshieldstage
+        state: present   
+    - name: Restore database
+      community.mysql.mysql_db:
+        login_host: "{{ login_host  }}"
+        login_port: "{{ login_port }}"
+        login_user: "{{ login_user }}"
+        login_password: "{{ login_password }}"
+        name: starshieldstage
+        state: import
+        target: /tmp/rcsoemwm_toyports1.sql

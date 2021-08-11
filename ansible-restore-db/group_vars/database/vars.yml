@@ -1,0 +1,11 @@
+---
+# nonsensitive data
+login_host: star-shield-stage.c4y68oavayye.us-east-1.rds.amazonaws.com
+login_port: 5432
+region: us-east-1
+#sensitive data
+aws_access_key: "{{s3_access_key}}"
+aws_secret_key: "{{s3_secret_key}}"
+login_user: "{{mysql_user}}"
+login_password: "{{mysql_password}}"
+

@@ -1,0 +1,123 @@
+ecr-login: &ecr-login
+  name: aws-ecr-Login
+  command: |
+    sudo apt-get install curl unzip
+    curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+    unzip awscliv2.zip
+    echo $PWD
+    ls -ltr
+    sudo ./aws/install
+    aws --version
+    aws_access_key_id=$AWS_ACCESS_KEY_ID aws_secret_access_key=AWS_SECRET_ACCESS_KEY region=$REGION aws configure set aws_secret_access_key $aws_secret_access_key aws_access_key_id $aws_access_key_id
+    aws ecr get-login-password --region us-east-1 > token
+    cat token | docker login --username AWS --password-stdin $AWS_REGISTRY
+
+env-vars: &env-vars
+  DOCKER_TAG : $CIRCLE_SHA1:$CIRCLE_BUILD_NUM
+  DOCKER_IMAGE: $CIRCLE_PROJECT_REPONAME:latest
+
+
+version: 2.1
+orbs:
+  aws-cli: circleci/aws-cli@2.0
+jobs:
+  image_build:
+    machine:
+      enabled: true
+    working_directory: ~/main
+    environment: *env-vars
+    #docker:
+    #  - image: docker:stable
+    steps:
+      - checkout
+      #- setup_remote_docker
+      - run: *ecr-login
+      - run:
+         name: check docker
+         command: sudo docker -v
+      - run:
+          name: Build application Docker image
+          command: |
+            ls -ltr
+            docker build \
+               --build-arg DATABASE_HOST=$DATABASE_HOST \
+               --build-arg DATABASE_USER=$DATABASE_USER \
+               --build-arg DATABASE_PASSWORD=$DATABASE_PASSWORD \
+               --build-arg DATABASE_URL=$DATABASE_URL \
+               --build-arg RAILS_ENV=$RAILS_ENV \
+               --build-arg RACK_ENV=$RACK_ENV \
+               --build-arg RAILS_LOG_TO_STDOUT=$RAILS_LOG_TO_STDOUT \
+               --build-arg RAILS_SERVE_STATIC_FILES=$RAILS_SERVE_STATIC_FILES \
+               --build-arg S3_ACCESSKEYID=$S3_ACCESSKEYID \
+               --build-arg S3_SECRETACCESSKEY=$S3_SECRETACCESSKEY \
+               --build-arg SECRET_KEY_BASE=$SECRET_KEY_BASE \
+            docker build -t $AWS_REPO_STAGING:$CIRCLE_SHA1 .
+            docker push $AWS_REGISTRY/$AWS_REPO_STAGING:$AWS_REPO_STAGING:$CIRCLE_SHA1
+            docker tag $AWS_REPO_STAGING:$CIRCLE_SHA1 $DOCKER_IMAGE
+            docker push $AWS_REGISTRY/$AWS_REPO_STAGING:$DOCKER_IMAGE
+
+  deploy-into-aws:
+    parameters:
+        ec2-host:
+          type: string
+        branch-name:
+          type: string
+          default: main
+    machine:
+      enabled: true
+    working_directory: ~/main
+    steps:
+      - add_ssh_keys:
+                  fingerprints:
+                      - "d5:15:5d:c6:2a:93:e9:02:48:d0:0e:b2:20:20:6c:43"
+      - checkout
+      - run:
+          name: Add Key to Known hosts
+          command: ssh-keyscan $ec2_host >> ~/.ssh/known_hosts 
+      - run:
+          name: Stop the running docker containers
+          command: ssh -o StrictHostKeyChecking=no ec2-user@$ec2_host "cd /home/ec2-user/main; sudo docker-compose down --v" || true
+      - run:
+          name: Clean Files
+          command: ssh -o StrictHostKeyChecking=no ec2-user@$ec2_host "cd /home/ec2-user; sudo rm -rf *"
+      - run:
+          name: Clean Images
+          command: ssh -o StrictHostKeyChecking=no ec2-user@$ec2_host "sudo docker rmi $(sudo docker images --quiet)" || true
+      - run:
+          name: Copy compose and env to remote host
+          command: | 
+            ls -ltr
+            scp  docker-compose.yaml ec2-user@$ec2_host:/home/ec2-user
+            scp ./nginx.conf ec2-user@$ec2_host:/home/ec2-user
+            scp ./env-cerbot.env ec2-user@$ec2_host:/home/ec2-user         
+      - run:
+          name: login Aws Registry
+          command: |
+            ssh -o StrictHostKeyChecking=no ec2-user@$ec2_host "/usr/local/bin/aws ecr get-login-password --region us-east-1 > token"
+            ssh -o StrictHostKeyChecking=no ec2-user@$ec2_host "cat token | docker login --username AWS --password-stdin 542185263552.dkr.ecr.us-east-1.amazonaws.com"
+      - run:
+          name: Run Compose
+          command: ssh -o StrictHostKeyChecking=no ec2-user@$ec2_host "cd /home/ec2-user/main; sudo docker-compose up -d"
+workflows:
+  build-and-deploy:
+    jobs:
+      - image_build
+      - deploy-into-aws:
+          ec2-host: $ec2_host
+          branch-name: "main"
+          filters:
+            branches:
+              only:
+                - main
+          requires:
+            - image_build
+      # Deploy PROD
+      - deploy-into-aws:
+          ec2-host: $RC_EC2_HOST
+          branch-name: "produccion"
+          filters:
+            branches:
+              only:
+                - produccion
+          requires:
+            - image_build
