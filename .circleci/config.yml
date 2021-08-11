@@ -56,7 +56,7 @@ jobs:
       - run:
           name: push images
           command: |
-            docker push $AWS_REGISTRY/$AWS_REPO_STAGING:$DOCKER_TAG
+            docker push $AWS_REGISTRY/$AWS_REPO_STAGING:$AWS_REPO_STAGING:$CIRCLE_SHA1
             #docker tag $DOCKER_TAG $DOCKER_IMAGE 
             #docker push $AWS_REGISTRY/$AWS_REPO_STAGING:$DOCKER_IMAGE
 
