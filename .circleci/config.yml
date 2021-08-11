@@ -14,7 +14,7 @@ ecr-login: &ecr-login
 
 env-vars: &env-vars
   DOCKER_TAG : $CIRCLE_SHA1:$CIRCLE_BUILD_NUM
-  DOCKER_IMAGE: $CIRCLE_PROJECT_REPONAME:latest
+  DOCKER_IMAGE: $CIRCLE_PROJECT_REPONAME
 
 
 version: 2.1
@@ -58,8 +58,8 @@ jobs:
           name: push images
           command: |
             docker push $AWS_REGISTRY/$AWS_REPO_STAGING:$CIRCLE_SHA1
-            docker tag $AWS_REGISTRY/$AWS_REPO_STAGING:$CIRCLE_SHA1 $DOCKER_IMAGE 
-            docker push $AWS_REGISTRY/$AWS_REPO_STAGING:$DOCKER_IMAGE
+            docker tag $AWS_REGISTRY/$AWS_REPO_STAGING:$CIRCLE_SHA1 latest 
+            docker push $AWS_REGISTRY/$AWS_REPO_STAGING:latest
 
   deploy-into-aws:
     parameters:
