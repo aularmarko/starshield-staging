@@ -24,7 +24,7 @@ jobs:
   image_build:
     machine:
       enabled: true
-    working_directory: ~/main
+    working_directory: ~/master
     environment: *env-vars
     #docker:
     #  - image: docker:stable
@@ -70,7 +70,7 @@ jobs:
           default: main
     machine:
       enabled: true
-    working_directory: ~/main
+    working_directory: ~/master
     steps:
       - add_ssh_keys:
                   fingerprints:
@@ -108,12 +108,12 @@ workflows:
     jobs:
       - image_build
       - deploy-into-aws:
-          ec2-host: $ec2_host
-          branch-name: "main"
+          ec2-host: $test
+          branch-name: "master"
           filters:
             branches:
               only:
-                - main
+                - master
           requires:
             - image_build
       # Deploy PROD
