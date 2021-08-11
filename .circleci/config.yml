@@ -38,6 +38,7 @@ jobs:
       - run:
           name: Build application Docker image
           command: |
+            echo $DATABASE_HOST
             ls -ltr
             docker build \
                --build-arg DATABASE_HOST=$DATABASE_HOST \
@@ -51,7 +52,7 @@ jobs:
                --build-arg S3_ACCESSKEYID=$S3_ACCESSKEYID \
                --build-arg S3_SECRETACCESSKEY=$S3_SECRETACCESSKEY \
                --build-arg SECRET_KEY_BASE=$SECRET_KEY_BASE \
-            docker build -t $AWS_REPO_STAGING:$CIRCLE_SHA1 .
+               -t $AWS_REPO_STAGING:$CIRCLE_SHA1 .
             docker push $AWS_REGISTRY/$AWS_REPO_STAGING:$AWS_REPO_STAGING:$CIRCLE_SHA1
             docker tag $AWS_REPO_STAGING:$CIRCLE_SHA1 $DOCKER_IMAGE
             docker push $AWS_REGISTRY/$AWS_REPO_STAGING:$DOCKER_IMAGE
