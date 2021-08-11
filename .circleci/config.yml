@@ -57,8 +57,8 @@ jobs:
           name: push images
           command: |
             docker push $AWS_REGISTRY/$AWS_REPO_STAGING:$DOCKER_TAG
-            docker tag DOCKER_TAG $DOCKER_IMAGE 
-            docker push $AWS_REGISTRY/$AWS_REPO_STAGING:$DOCKER_IMAGE
+            #docker tag $DOCKER_TAG $DOCKER_IMAGE 
+            #docker push $AWS_REGISTRY/$AWS_REPO_STAGING:$DOCKER_IMAGE
 
   deploy-into-aws:
     parameters:
