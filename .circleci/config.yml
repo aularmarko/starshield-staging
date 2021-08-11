@@ -58,7 +58,7 @@ jobs:
           name: push images
           command: |
             docker push $AWS_REGISTRY/$AWS_REPO_STAGING:$CIRCLE_SHA1
-            docker tag $AWS_REGISTRY/$AWS_REPO_STAGING:$CIRCLE_SHA1 latest 
+            docker tag $AWS_REGISTRY/$AWS_REPO_STAGING:$CIRCLE_SHA1 $AWS_REGISTRY/$AWS_REPO_STAGING:latest 
             docker push $AWS_REGISTRY/$AWS_REPO_STAGING:latest
 
   deploy-into-aws:
