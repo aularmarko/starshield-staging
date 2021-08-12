@@ -100,5 +100,8 @@ workflows:
       - image_build
       - deploy-into-aws:
           requires:
-            - image_build
+            - image_build  
+          filters:
+            branches:
+              only: master
 
