@@ -72,7 +72,7 @@ jobs:
           command: ssh-keyscan $ec2_host >> ~/.ssh/known_hosts 
       - run:
           name: Stop the running docker containers
-          command: ssh -o StrictHostKeyChecking=no ec2-user@$ec2_host "cd /home/ec2-user/main; sudo docker-compose down --v" || true
+          command: ssh -o StrictHostKeyChecking=no ec2-user@$ec2_host "cd /home/ec2-user/; sudo docker-compose down --v" || true
       - run:
           name: Clean Files
           command: ssh -o StrictHostKeyChecking=no ec2-user@$ec2_host "cd /home/ec2-user; sudo rm -rf *"
@@ -91,7 +91,7 @@ jobs:
             ssh -o StrictHostKeyChecking=no ec2-user@$ec2_host "cat token | docker login --username AWS --password-stdin 542185263552.dkr.ecr.us-east-1.amazonaws.com"
       - run:
           name: Run Compose
-          command: ssh -o StrictHostKeyChecking=no ec2-user@$ec2_host "cd /home/ec2-user/main; sudo docker-compose up -d"
+          command: ssh -o StrictHostKeyChecking=no ec2-user@$ec2_host "cd /home/ec2-user/; sudo docker-compose up -d"
 workflows:
   version: 2
   build-and-deploy:
