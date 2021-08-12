@@ -62,12 +62,6 @@ jobs:
             docker push $AWS_REGISTRY/$AWS_REPO_STAGING:latest
 
   deploy-into-aws:
-    parameters:
-        ec2-host:
-          type: string
-        branch-name:
-          type: string
-          default: main
     machine:
       enabled: true
     working_directory: ~/master
@@ -107,9 +101,7 @@ workflows:
   build-and-deploy:
     jobs:
       - image_build
-      - deploy-into-aws:
-          ec2-host: $test
-          branch-name: "master"
+      - deploy-into-aws
           filters:
             branches:
               only:
