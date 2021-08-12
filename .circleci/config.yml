@@ -83,9 +83,7 @@ jobs:
           name: Copy compose and env to remote host
           command: | 
             ls -ltr
-            scp  docker-compose.yaml ec2-user@$ec2_host:/home/ec2-user
-            scp  nginx.conf ec2-user@$ec2_host:/home/ec2-user
-            scp  env-cerbot.env ec2-user@$ec2_host:/home/ec2-user         
+            scp  -r * ec2-user@$ec2_host:/home/ec2-user/       
       - run:
           name: login Aws Registry
           command: |
