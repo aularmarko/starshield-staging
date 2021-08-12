@@ -72,7 +72,9 @@ jobs:
           command: ssh-keyscan $ec2_host >> ~/.ssh/known_hosts 
       - run:
           name: Stop the running docker containers
-          command: ssh -o StrictHostKeyChecking=no ec2-user@$ec2_host "cd /home/ec2-user/; sudo docker-compose down --v" || true
+          command: |
+            ssh -o StrictHostKeyChecking=no ec2-user@$ec2_host "cd /home/ec2-user/; sudo docker-compose down --v" || true
+            scp docker-compose.yaml ec2-user@$ec2_host:/home/ec2-user
       - run:
           name: Clean Files
           command: ssh -o StrictHostKeyChecking=no ec2-user@$ec2_host "cd /home/ec2-user; sudo rm -rf *"
@@ -100,8 +102,5 @@ workflows:
       - image_build
       - deploy-into-aws:
           requires:
-            - image_build  
-          filters:
-            branches:
-              only: master
+            - image_build
 
