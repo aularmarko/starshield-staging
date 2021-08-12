@@ -83,7 +83,7 @@ jobs:
           name: Copy compose and env to remote host
           command: | 
             ssh-copy-id -i ~/.ssh/id_rsa.pub ec2-user@$ec2_host
-            scp -r /home/circleci/master/* ec2-user@$ec2_host:home/ec2-user/
+            ssh -o StrictHostKeyChecking=no ec2-user@$ec2_host "git clone https://username:$TOKEN_GIT@github.com/username/repository.git; ls -ltr"
           
       - run:
           name: login Aws Registry
