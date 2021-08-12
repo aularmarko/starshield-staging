@@ -86,7 +86,7 @@ jobs:
             ssh -o StrictHostKeyChecking=no ec2-user@$ec2_host "mkdir -p /home/ec2-user/master"
             ls -ltr
             pwd
-            scp * ec2-user@$ec2_host:/home/ec2-user/master
+            scp * ec2-user@$ec2_host:home/ec2-user/
           
       - run:
           name: login Aws Registry
