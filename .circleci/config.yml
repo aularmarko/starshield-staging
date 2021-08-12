@@ -72,7 +72,7 @@ jobs:
           command: ssh-keyscan $ec2_host >> ~/.ssh/known_hosts 
       - run:
           name: Stop the running docker containers
-          command: ssh -o StrictHostKeyChecking=no ec2-user@$ec2_host "cd /home/ec2-user/; ls- ltr; sudo docker-compose down --v" || true
+          command: ssh -o StrictHostKeyChecking=no ec2-user@$ec2_host "cd /home/ec2-user/; pwd; sudo docker-compose down --v" || true
       - run:
           name: Clean Files
           command: ssh -o StrictHostKeyChecking=no ec2-user@$ec2_host "cd /home/ec2-user; sudo rm -rf *"
