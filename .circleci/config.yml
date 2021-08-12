@@ -81,7 +81,9 @@ jobs:
           command: ssh -o StrictHostKeyChecking=no ec2-user@$ec2_host "sudo docker rmi $(sudo docker images --quiet)" || true
       - run:
           name: Copy compose and env to remote host
-          command: scp  -r * ec2-user@$ec2_host:/home/ec2-user/ 
+          command: | 
+            scp docker-compose.yaml ec2-user@$ec2_host:/home/ec2-user
+            scp * ec2-user@$ec2_host:/home/ec2-user
           
       - run:
           name: login Aws Registry
