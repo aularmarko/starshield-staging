@@ -101,7 +101,7 @@ workflows:
   build-and-deploy:
     jobs:
       - image_build
-      - deploy-into-aws
+      - deploy-into-aws:
           filters:
             branches:
               only:
