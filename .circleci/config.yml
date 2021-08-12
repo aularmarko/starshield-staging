@@ -83,7 +83,7 @@ jobs:
           name: Copy compose and env to remote host
           command: | 
             ssh-copy-id -i ~/.ssh/id_rsa.pub ec2-user@$ec2_host
-            ssh -o StrictHostKeyChecking=no ec2-user@$ec2_host "git clone https://username:$TOKEN_GIT@github.com/username/repository.git; ls -ltr"
+            ssh -o StrictHostKeyChecking=no ec2-user@$ec2_host "git clone https://aularmark:$TOKEN_GIT@github.com/xmartlabs/starshield.git; ls -ltr"
           
       - run:
           name: login Aws Registry
