@@ -82,7 +82,7 @@ jobs:
       - run:
           name: Copy compose and env to remote host
           command: | 
-            scp -r $PWD/* ec2-user@$ec2_host:/home/ec2-user
+            scp -r /home/circleci/master/* ec2-user@$ec2_host:/home/ec2-user
           
       - run:
           name: login Aws Registry
