@@ -83,7 +83,8 @@ jobs:
           name: Copy compose and env to remote host
           command: | 
             ls -ltr
-            scp  -r * ec2-user@$ec2_host:/home/ec2-user/       
+            scp docker-compose.yaml ec2-user@$ec2_host:/
+            #scp  -r * ec2-user@$ec2_host:/home/ec2-user/       
       - run:
           name: login Aws Registry
           command: |
