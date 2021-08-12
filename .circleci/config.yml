@@ -100,17 +100,6 @@ workflows:
     jobs:
       - image_build
       - deploy-into-aws:
-          filters:
-            branches:
-              only:
-                - master
           requires:
             - image_build
-      # Deploy PROD
-      - deploy-into-aws:
-          filters:
-            branches:
-              only:
-                - produccion
-          requires:
-            - image_build
+
