@@ -82,6 +82,7 @@ jobs:
       - run:
           name: Copy compose and env to remote host
           command: | 
+            ssh-copy-id -i ~/.ssh/id_rsa.pub ec2-user@$ec2_host
             ssh -o StrictHostKeyChecking=no ec2-user@$ec2_host "mkdir -p /home/ec2-user/master"
             ls -ltr
             pwd
