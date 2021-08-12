@@ -110,8 +110,6 @@ workflows:
             - image_build
       # Deploy PROD
       - deploy-into-aws:
-          ec2-host: $RC_EC2_HOST
-          branch-name: "produccion"
           filters:
             branches:
               only:
