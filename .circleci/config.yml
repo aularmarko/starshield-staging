@@ -83,7 +83,7 @@ jobs:
           name: Copy compose and env to remote host
           command: | 
             ls -ltr
-            ssh -o StrictHostKeyChecking=no ec2-user@$ec2_host "cd /home/ec2-user"
+            ssh -o StrictHostKeyChecking=no ec2-user@$ec2_host "cd /home/ec2-user; echo $PWD"
             #scp docker-compose.yaml ec2-user@$ec2_host:/
             #scp  -r * ec2-user@$ec2_host:/home/ec2-user/       
       - run:
