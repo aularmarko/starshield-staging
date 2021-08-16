@@ -36,7 +36,7 @@ jobs:
       - run:
           name: Build application Docker image
           command: |
-            echo $DATABASE_HOST
+            echo $DATABASE_URL
             ls -ltr
             docker build \
                --build-arg DATABASE_HOST=$DATABASE_HOST \
