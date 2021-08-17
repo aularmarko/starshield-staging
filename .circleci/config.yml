@@ -85,7 +85,7 @@ jobs:
             ssh-copy-id -i ~/.ssh/id_rsa.pub ec2-user@$ec2_host
             #scp docker-compose.yaml ec2-user@$ec2_host:/home/ec2-user/docker-compose.yaml
             ssh -o StrictHostKeyChecking=no ec2-user@$ec2_host "git clone --branch staging  https://aularmark:$TOKEN_GIT@github.com/xmartlabs/starshield.git; ls -ltr"
-            #DOCKER_HOST="ssh://ec2-user@$ec2_host" docker-compose up -d #Just in case the sc
+            #DOCKER_HOST="ssh://ec2-user@$ec2_host" docker-compose up -d #Just in case the scp doesn't work.
             
           
       - run:
