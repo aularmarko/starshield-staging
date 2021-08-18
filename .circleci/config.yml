@@ -88,12 +88,7 @@ jobs:
             #DOCKER_HOST="ssh://ec2-user@$ec2_host" docker-compose up -d #Just in case the scp doesn't work.
             
           
-      - run:
-          name: login Aws Registry
-          command: |
-            ssh -o StrictHostKeyChecking=no ec2-user@$ec2_host "aws_access_key_id=$AWS_ACCESS_KEY_ID aws_secret_access_key=$AWS_SECRET_ACCESS_KEY region=$REGION aws configure set aws_secret_access_key $aws_secret_access_key aws_access_key_id $aws_access_key_id"
-            ssh -o StrictHostKeyChecking=no ec2-user@$ec2_host "/usr/local/bin/aws ecr get-login-password --region us-east-1 > token"
-            ssh -o StrictHostKeyChecking=no ec2-user@$ec2_host "cat token | docker login --username AWS --password-stdin 542185263552.dkr.ecr.us-east-1.amazonaws.com"
+      - run: *ecr-login
       - run:
           name: Run Compose
           command: ssh -o StrictHostKeyChecking=no ec2-user@$ec2_host "cd /home/ec2-user/starshield; sudo docker-compose up -d"
