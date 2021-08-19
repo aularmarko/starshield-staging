@@ -22,7 +22,7 @@ jobs:
   image_build:
     machine:
       enabled: true
-    working_directory: ~/master
+    working_directory: ~/staging
     environment: *env-vars
     #docker:
     #  - image: docker:stable
@@ -36,7 +36,6 @@ jobs:
       - run:
           name: Build application Docker image
           command: |
-            echo $DATABASE_URL
             ls -ltr
             docker build \
                --build-arg DATABASE_HOST=$DATABASE_HOST \
@@ -61,7 +60,7 @@ jobs:
   deploy-into-aws:
     machine:
       enabled: true
-    working_directory: ~/master
+    working_directory: ~/staging
     steps:
       - add_ssh_keys:
                   fingerprints:
@@ -89,7 +88,7 @@ jobs:
             
           
       - run: 
-          name: Login 
+          name: Login AWS ECR in Remote Host
           command: |
             ssh -o StrictHostKeyChecking=no ec2-user@$ec2_host "aws ecr get-login-password --region us-east-1 > token"
             ssh -o StrictHostKeyChecking=no ec2-user@$ec2_host "cat token | docker login --username AWS --password-stdin 542185263552.dkr.ecr.us-east-1.amazonaws.com" 
